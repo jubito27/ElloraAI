@@ -1,87 +1,101 @@
-from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline
-from langchain_community.llms import HuggingFacePipeline
-from langchain.prompts import PromptTemplate
-from langchain.chains import ConversationChain
-from langchain.memory import ConversationBufferMemory
-import torch
 import streamlit as st
+from huggingface_hub import InferenceClient
 
-# Load the model and tokenizer
-model_name = "deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B"
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-tokenizer = AutoTokenizer.from_pretrained(model_name)
+# Initialize the Hugging Face Inference Client
+client = InferenceClient("HuggingFaceH4/zephyr-7b-beta")
 
-# Load the model without device_map and low_cpu_mem_usage
-model = AutoModelForCausalLM.from_pretrained(
-    model_name,
-    torch_dtype=torch.float16  # Use half-precision to save memory
-)
-model = model.to(device)
+# Streamlit app title
+st.title("Chat with Zephyr-7b-beta")
 
-# Create a Hugging Face pipeline
-hf_pipeline = pipeline(
-    "text-generation",
-    model=model,
-    tokenizer=tokenizer,
-    device=device,  # Use the specified device
-    max_new_tokens=512,    # Maximum number of tokens to generate
-    truncation=True,      # Truncate input if it exceeds max_length
-    temperature=1.0,      # Adjust this value based on your use case
-    return_full_text=False,  # Do not include the input prompt in the output
-)
-
-# Wrap the pipeline in LangChain
-llm = HuggingFacePipeline(pipeline=hf_pipeline)
-
-# Define the system-level prompt template
-template = """You are a helpful AI assistant and your name is Ellora made by Abhishek sharma. Answer the user's questions clearly and concisely.
-
-Conversation History:
-{history}
-
-User: {input}
-Ellora:"""
-
-# Create the PromptTemplate
-prompt = PromptTemplate(input_variables=["history", "input"], template=template)
-
-# Add memory for conversation history
-memory = ConversationBufferMemory()
-
-# Create a chatbot chain
-chatbot = ConversationChain(
-    llm=llm,
-    prompt=prompt,
-    memory=memory,
-    verbose=False  # Set to True to see the prompt and memory in action
-)
-
-# Streamlit app
-st.title("Ellora AI")
-
-# Initialize session state for chat history
+# Initialize chat history in session state
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
 
+# Sidebar for system message and parameters
+with st.sidebar:
+    st.header("Settings")
+    system_message = st.text_area(
+        "System Message",
+        value="You are a helpful AI assistant.",
+        help="Define the system-level behavior of the chatbot.",
+    )
+    max_tokens = st.slider(
+        "Max Tokens",
+        min_value=1,
+        max_value=500,
+        value=200,
+        help="Maximum number of tokens to generate.",
+    )
+    temperature = st.slider(
+        "Temperature",
+        min_value=0.1,
+        max_value=2.0,
+        value=1.0,
+        help="Controls randomness in the model's responses.",
+    )
+    top_p = st.slider(
+        "Top-p (Nucleus Sampling)",
+        min_value=0.1,
+        max_value=1.0,
+        value=0.9,
+        help="Controls diversity of the model's responses.",
+    )
+
 # Display chat history
-for message in st.session_state.chat_history:
-    with st.chat_message(message["role"]):
-        st.markdown(message["content"])
+if "chat_history" in st.session_state:
+    for user_message, bot_response in st.session_state.chat_history:
+        with st.chat_message("user"):
+            st.write(user_message)
+        with st.chat_message("assistant"):
+            st.write(bot_response)
+else:
+    st.warning("Chat history is not initialized. Please refresh the page.")
+
+# Function to generate chatbot response
+def respond(message, system_message, max_tokens, temperature, top_p):
+    messages = [{"role": "system", "content": system_message}]
+
+    # Add chat history to messages
+    if "chat_history" in st.session_state:
+        for user_msg, bot_msg in st.session_state.chat_history:
+            if user_msg:
+                messages.append({"role": "user", "content": user_msg})
+            if bot_msg:
+                messages.append({"role": "assistant", "content": bot_msg})
+
+    # Add the current user message
+    messages.append({"role": "user", "content": message})
+
+    # Stream the response from the model
+    response = ""
+    for message in client.chat_completion(
+        messages,
+        max_tokens=max_tokens,
+        stream=True,
+        temperature=temperature,
+        top_p=top_p,
+    ):
+        token = message.choices[0].delta.content
+        response += token
+        yield response
 
 # User input
 user_input = st.chat_input("Type your message here...")
 
-# Handle user input
 if user_input:
-    # Add user message to chat history
-    st.session_state.chat_history.append({"role": "user", "content": user_input})
-    with st.chat_message("user"):
-        st.markdown(user_input)
+    # Ensure chat history is initialized
+    if "chat_history" not in st.session_state:
+        st.session_state.chat_history = []
 
-    # Generate chatbot response
-    response = chatbot.run(user_input)
-    
-    # Add chatbot response to chat history
-    st.session_state.chat_history.append({"role": "Ellora", "content": response})
-    with st.chat_message("Ellora"):
-        st.markdown(response)
+    # Display user message
+    with st.chat_message("user"):
+        st.write(user_input)
+
+    # Generate and display bot response
+    with st.chat_message("assistant"):
+        bot_response = st.write_stream(
+            respond(user_input, system_message, max_tokens, temperature, top_p)
+        )
+
+    # Update chat history
+    st.session_state.chat_history.append((user_input, bot_response))
