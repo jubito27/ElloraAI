@@ -1,1 +1,14 @@
 * @streamlit/community-cloud
+# CODEOWNERS file for the AI Chatbot project
+
+# Global owners for the entire repository
+* @jubito27
+
+# Specific owners for the main chatbot script
+/chatbot_ui_streamlit.py @jubito27
+
+# Owners for the requirements and dependencies
+/requirements.txt @jubito27 
+
+# Owners for documentation
+/README.md @jubito27
