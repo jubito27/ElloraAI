@@ -1,56 +1,82 @@
+from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline
+from langchain.llms import HuggingFacePipeline
+from langchain.prompts import PromptTemplate
+from langchain.chains import ConversationChain
+from langchain.memory import ConversationBufferMemory
+import torch
 import streamlit as st
-from openai import OpenAI
 
-# Show title and description.
-st.title("💬 Chatbot")
-st.write(
-    "This is a simple chatbot that uses OpenAI's GPT-3.5 model to generate responses. "
-    "To use this app, you need to provide an OpenAI API key, which you can get [here](https://platform.openai.com/account/api-keys). "
-    "You can also learn how to build this app step by step by [following our tutorial](https://docs.streamlit.io/develop/tutorials/llms/build-conversational-apps)."
+# Load the model and tokenizer
+model_name = "deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B"
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+model = AutoModelForCausalLM.from_pretrained(model_name, device_map="cpu")
+model = model.to(device)
+
+# Create a Hugging Face pipeline
+hf_pipeline = pipeline(
+    "text-generation",
+    model=model,
+    tokenizer=tokenizer,
+    device_map="cpu",
+    max_new_tokens=512,    # Maximum number of tokens to generate
+    truncation=True,      # Truncate input if it exceeds max_length
+    temperature=1.0,      # Adjust this value based on your use case
+    return_full_text=False,  # Do not include the input prompt in the output
 )
 
-# Ask user for their OpenAI API key via `st.text_input`.
-# Alternatively, you can store the API key in `./.streamlit/secrets.toml` and access it
-# via `st.secrets`, see https://docs.streamlit.io/develop/concepts/connections/secrets-management
-openai_api_key = st.text_input("OpenAI API Key", type="password")
-if not openai_api_key:
-    st.info("Please add your OpenAI API key to continue.", icon="🗝️")
-else:
+# Wrap the pipeline in LangChain
+llm = HuggingFacePipeline(pipeline=hf_pipeline)
 
-    # Create an OpenAI client.
-    client = OpenAI(api_key=openai_api_key)
+# Define the system-level prompt template
+template = """You are a helpful AI assistant and your name is Ellora made by Abhishek sharma. Answer the user's questions clearly and concisely.
 
-    # Create a session state variable to store the chat messages. This ensures that the
-    # messages persist across reruns.
-    if "messages" not in st.session_state:
-        st.session_state.messages = []
+Conversation History:
+{history}
 
-    # Display the existing chat messages via `st.chat_message`.
-    for message in st.session_state.messages:
-        with st.chat_message(message["role"]):
-            st.markdown(message["content"])
+User: {input}
+Ellora:"""
 
-    # Create a chat input field to allow the user to enter a message. This will display
-    # automatically at the bottom of the page.
-    if prompt := st.chat_input("What is up?"):
+# Create the PromptTemplate
+prompt = PromptTemplate(input_variables=["history", "input"], template=template)
 
-        # Store and display the current prompt.
-        st.session_state.messages.append({"role": "user", "content": prompt})
-        with st.chat_message("user"):
-            st.markdown(prompt)
+# Add memory for conversation history
+memory = ConversationBufferMemory()
 
-        # Generate a response using the OpenAI API.
-        stream = client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=[
-                {"role": m["role"], "content": m["content"]}
-                for m in st.session_state.messages
-            ],
-            stream=True,
-        )
+# Create a chatbot chain
+chatbot = ConversationChain(
+    llm=llm,
+    prompt=prompt,
+    memory=memory,
+    verbose=False  # Set to True to see the prompt and memory in action
+)
 
-        # Stream the response to the chat using `st.write_stream`, then store it in 
-        # session state.
-        with st.chat_message("assistant"):
-            response = st.write_stream(stream)
-        st.session_state.messages.append({"role": "assistant", "content": response})
+# Streamlit app
+st.title("Ellora AI")
+
+# Initialize session state for chat history
+if "chat_history" not in st.session_state:
+    st.session_state.chat_history = []
+
+# Display chat history
+for message in st.session_state.chat_history:
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
+
+# User input
+user_input = st.chat_input("Type your message here...")
+
+# Handle user input
+if user_input:
+    # Add user message to chat history
+    st.session_state.chat_history.append({"role": "user", "content": user_input})
+    with st.chat_message("user"):
+        st.markdown(user_input)
+
+    # Generate chatbot response
+    response = chatbot.run(user_input)
+    
+    # Add chatbot response to chat history
+    st.session_state.chat_history.append({"role": "Ellora", "content": response})
+    with st.chat_message("Ellora"):
+        st.markdown(response)
