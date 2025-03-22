@@ -11,10 +11,11 @@ config = AutoConfig.from_pretrained("deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B")
 config.use_sliding_window_attention = False  # Disable Sliding Window Attention
 
 # Load the model and tokenizer
+
 model_name = "deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B"
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 tokenizer = AutoTokenizer.from_pretrained(model_name)
-model = AutoModelForCausalLM.from_pretrained(model_name, config=config, device_map="auto", low_cpu_mem_usage=True)
+model = AutoModelForCausalLM.from_pretrained(model_name, config=config, device_map="auto", low_cpu_mem_usage=True, attn_implementation="eager")
 model = model.to(device)
 
 # Create a Hugging Face pipeline
