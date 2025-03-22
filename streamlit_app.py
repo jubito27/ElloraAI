@@ -1,4 +1,4 @@
-from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline
+from transformers import AutoTokenizer, AutoModelForCausalLM, AutoConfig, pipeline
 from langchain_community.llms import HuggingFacePipeline
 from langchain.prompts import PromptTemplate
 from langchain.chains import ConversationChain
@@ -6,11 +6,15 @@ from langchain.memory import ConversationBufferMemory
 import torch
 import streamlit as st
 
+# Load the model configuration and disable Sliding Window Attention
+config = AutoConfig.from_pretrained("deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B")
+config.use_sliding_window_attention = False  # Disable Sliding Window Attention
+
 # Load the model and tokenizer
 model_name = "deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B"
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 tokenizer = AutoTokenizer.from_pretrained(model_name)
-model = AutoModelForCausalLM.from_pretrained(model_name, device_map="auto", low_cpu_mem_usage=True)
+model = AutoModelForCausalLM.from_pretrained(model_name, config=config, device_map="auto", low_cpu_mem_usage=True)
 model = model.to(device)
 
 # Create a Hugging Face pipeline
@@ -19,7 +23,7 @@ hf_pipeline = pipeline(
     model=model,
     tokenizer=tokenizer,
     device_map="auto",
-    max_new_tokens=800,    # Maximum number of tokens to generate
+    max_new_tokens=512,    # Maximum number of tokens to generate
     truncation=True,      # Truncate input if it exceeds max_length
     temperature=1.0,      # Adjust this value based on your use case
     return_full_text=False,  # Do not include the input prompt in the output
