@@ -1,87 +1,135 @@
 import streamlit as st
-import time  # Added this import
+import time
 from huggingface_hub import InferenceClient
 from secret import API_TOKEN
 
-# Initialize the Hugging Face Inference Client
 client = InferenceClient(model="HuggingFaceH4/zephyr-7b-beta", token=API_TOKEN)
 
-# Streamlit app title
-st.title("Ellora AI")
+# Strong identity enforcement
+IDENTITY_RESPONSES = {
+    "what is your name": "My name is Ellora AI",
+    "who created you": "I was created by Abhishek Sharma",
+    "who made you": "I was created by Abhishek Sharma"
+}
 
-# Initialize chat history
-if "chat_history" not in st.session_state:
-    st.session_state.chat_history = []
-
-# Stronger system message with explicit instructions
-system_template = """You are Ellora AI, a friendly virtual assistant created by Abhishek Sharma. 
-You MUST always follow these rules:
-1. When asked your name, respond: "My name is Ellora AI"
-2. When asked who created you, respond: "I was created by Abhishek Sharma, a B.Tech student"
-3. Never mention being a language model or AI unless specifically asked
-4. Never mention not having a physical form
-5. Respond conversationally and helpfully"""
-
-# Settings (collapsed by default)
-with st.sidebar:
-    settings_expander = st.expander("⚙️ Settings", expanded=False)
-    with settings_expander:
-        max_tokens = st.slider("Response Length", 100, 1000, 400)
-        temperature = st.slider("Creativity", 0.1, 1.5, 0.7)
-
-def enforce_identity(response):
-    """Post-processing to ensure correct identity responses"""
-    identity_phrases = {
-        "what is your name": "My name is Ellora AI",
-        "who created you": "I was created by Abhishek Sharma",
-        "who made you": "I was created by Abhishek Sharma"
-    }
-    
-    lower_response = response.lower()
-    for phrase, answer in identity_phrases.items():
-        if phrase in lower_response:
+def get_response(prompt):
+    # Check for identity questions first
+    lower_prompt = prompt.lower()
+    for question, answer in IDENTITY_RESPONSES.items():
+        if question in lower_prompt:
             return answer
+    
+    # Normal response generation
+    messages = [{"role": "system", "content": "You are Ellora AI. Never mention being just an AI."}]
+    if "messages" in st.session_state:
+        messages.extend(st.session_state.messages)
+    
+    messages.append({"role": "user", "content": prompt})
+    
+    response = client.chat_completion(
+        messages=messages,
+        max_tokens=200,
+        temperature=0.7,
+        stream=False  # Disable Hugging Face streaming
+    ).choices[0].message.content
+    
     return response
 
-def generate_response(prompt):
-    messages = [
-        {"role": "system", "content": system_template},
-        *[{"role": role, "content": content} 
-          for user, assistant in st.session_state.chat_history 
-          for role, content in [("user", user), ("assistant", assistant)]],
-        {"role": "user", "content": prompt}
-    ]
-    
-    # Get complete response first (not streamed) to ensure consistency
-    response = ""
-    try:
-        result = client.chat_completion(
-            messages,
-            max_tokens=max_tokens,
-            stream=False,
-            temperature=temperature
-        )
-        response = result.choices[0].message.content
-    except Exception as e:
-        st.error(f"Error generating response: {str(e)}")
-        return "I encountered an error. Please try again."
-    
-    # Enforce identity responses
-    response = enforce_identity(response)
-    
-    # Simulate streaming for better UX
-    words = response.split()
-    partial = ""
-    for word in words:
-        partial += word + " "
-        yield partial
-        time.sleep(0.05)  # Now properly imported
+# Initialize chat
+if "messages" not in st.session_state:
+    st.session_state.messages = []
 
-# Chat interface
-if prompt := st.chat_input("How can I help you?"):
+# Display history
+for msg in st.session_state.messages:
+    st.chat_message(msg["role"]).write(msg["content"])
+
+if prompt := st.chat_input("Ask me anything"):
+    # Add user message
     st.chat_message("user").write(prompt)
+    st.session_state.messages.append({"role": "user", "content": prompt})
     
+    # Generate response
     with st.chat_message("assistant"):
-        response = st.write_stream(generate_response(prompt))
+        response = get_response(prompt)
+        
+        # Clean streaming simulation
+        placeholder = st.empty()
+        full_response = ""
+        
+        for word in response.split():
+            full_response += word + " "
+            placeholder.markdown(full_response)
+            time.sleep(0.08)  # Natural typing speed
+        
+        # Ensure final clean version
+        placeholder.markdown(response)
     
-    st.session_state.chat_history.append((prompt, response))
+    # Save to history
+    st.session_state.messages.append({"role": "assistant", "content": response})import streamlit as st
+import time
+from huggingface_hub import InferenceClient
+from secret import API_TOKEN
+
+client = InferenceClient(model="HuggingFaceH4/zephyr-7b-beta", token=API_TOKEN)
+
+# Strong identity enforcement
+IDENTITY_RESPONSES = {
+    "what is your name": "My name is Ellora AI",
+    "who created you": "I was created by Abhishek Sharma",
+    "who made you": "I was created by Abhishek Sharma"
+}
+
+def get_response(prompt):
+    # Check for identity questions first
+    lower_prompt = prompt.lower()
+    for question, answer in IDENTITY_RESPONSES.items():
+        if question in lower_prompt:
+            return answer
+    
+    # Normal response generation
+    messages = [{"role": "system", "content": "You are Ellora AI. Never mention being just an AI."}]
+    if "messages" in st.session_state:
+        messages.extend(st.session_state.messages)
+    
+    messages.append({"role": "user", "content": prompt})
+    
+    response = client.chat_completion(
+        messages=messages,
+        max_tokens=200,
+        temperature=0.7,
+        stream=False  # Disable Hugging Face streaming
+    ).choices[0].message.content
+    
+    return response
+
+# Initialize chat
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+
+# Display history
+for msg in st.session_state.messages:
+    st.chat_message(msg["role"]).write(msg["content"])
+
+if prompt := st.chat_input("Ask me anything"):
+    # Add user message
+    st.chat_message("user").write(prompt)
+    st.session_state.messages.append({"role": "user", "content": prompt})
+    
+    # Generate response
+    with st.chat_message("assistant"):
+        response = get_response(prompt)
+        
+        # Clean streaming simulation
+        placeholder = st.empty()
+        full_response = ""
+        
+        for word in response.split():
+            full_response += word + " "
+            placeholder.markdown(full_response)
+            time.sleep(0.08)  # Natural typing speed
+        
+        # Ensure final clean version
+        placeholder.markdown(response)
+    
+    # Save to history
+    st.session_state.messages.append({"role": "assistant", "content": response})
