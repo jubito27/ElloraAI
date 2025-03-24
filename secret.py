@@ -1,1 +1,1 @@
-API_TOKEN = "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"
+API_TOKEN = "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"
