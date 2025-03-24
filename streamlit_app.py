@@ -8,13 +8,13 @@ st.title("Ellora AI")
 # Initialize chat history in session state
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
-
+template = "A helpful AI assistant named Ellora AIncreated by Abhishek sharma, Abhishek is a Btech student."
 # Sidebar for system message and parameters
 with st.sidebar:
     st.header("Settings")
     system_message = st.text_area(
-        "System Message",
-        value="A helpful AI assistant named Ellora AI.",
+        "System Details",
+        value=template",
         help="Define the system-level behavior of the chatbot.",
     )
     max_tokens = st.slider(
