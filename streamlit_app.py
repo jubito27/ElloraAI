@@ -65,4 +65,4 @@ if prompt := st.chat_input("Ask me anything"):
         placeholder.markdown(response)
     
     # Save to history
-    st.session_state.messages.append({"role": "assistant", "content": response})import streamlit as st
+    st.session_state.messages.append({"role": "assistant", "content": response})
