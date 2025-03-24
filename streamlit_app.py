@@ -11,6 +11,12 @@ IDENTITY_RESPONSES = {
     "who created you": "I was created by Abhishek Sharma",
     "who made you": "I was created by Abhishek Sharma"
 }
+st.title("Ellora AI")
+with st.sidebar:
+    settings_expander = st.expander("⚙️ Settings", expanded=False)
+    with settings_expander:
+        max_tokens = st.slider("Response Length", 100, 1000, 400)
+        temperature = st.slider("Creativity", 0.1, 1.5, 0.7)
 
 def get_response(prompt):
     # Check for identity questions first
