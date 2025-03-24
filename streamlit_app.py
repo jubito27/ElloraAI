@@ -7,7 +7,7 @@ from secret import API_TOKEN
 try:
     login(token=API_TOKEN)
     client = InferenceClient(
-        model="mistralai/Mistral-7B-Instruct-v0.1",  # More reliable alternative
+        model="HuggingFaceH4/zephyr-7b-beta",  # More reliable alternative
         token=API_TOKEN,
         timeout=30
     )
