@@ -1,11 +1,9 @@
 import streamlit as st
 from huggingface_hub import InferenceClient
-
-# Initialize the Hugging Face Inference Client
-client = InferenceClient("HuggingFaceH4/zephyr-7b-beta")
-
+API_Token = "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"
+client = InferenceClient(model="HuggingFaceH4/zephyr-7b-beta", token=API_TOKEN)
 # Streamlit app title
-st.title("Chat with Zephyr-7b-beta")
+st.title("Ellora AI")
 
 # Initialize chat history in session state
 if "chat_history" not in st.session_state:
@@ -16,14 +14,14 @@ with st.sidebar:
     st.header("Settings")
     system_message = st.text_area(
         "System Message",
-        value="You are a helpful AI assistant.",
+        value="A helpful AI assistant named Ellora AI.",
         help="Define the system-level behavior of the chatbot.",
     )
     max_tokens = st.slider(
         "Max Tokens",
         min_value=1,
-        max_value=500,
-        value=200,
+        max_value=2000,
+        value=600,
         help="Maximum number of tokens to generate.",
     )
     temperature = st.slider(
