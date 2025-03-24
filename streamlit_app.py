@@ -1,9 +1,19 @@
 import streamlit as st
 import time
-from huggingface_hub import InferenceClient
+from huggingface_hub import InferenceClient , login
 from secret import API_TOKEN
 
-client = InferenceClient(model="HuggingFaceH4/zephyr-7b-beta", token=API_TOKEN)
+#client = InferenceClient(model="HuggingFaceH4/zephyr-7b-beta", token=API_TOKEN)
+try:
+    login(token=API_TOKEN)
+    client = InferenceClient(
+        model="mistralai/Mistral-7B-Instruct-v0.1",  # More reliable alternative
+        token=API_TOKEN,
+        timeout=30
+    )
+except Exception as e:
+    st.error(f"Failed to initialize: {str(e)}")
+    st.stop()
 
 # Strong identity enforcement
 IDENTITY_RESPONSES = {
@@ -21,29 +31,33 @@ with st.sidebar:
         temperature = st.slider("Creativity", 0.1, 1.5, 0.7)
 
 def get_response(prompt):
-    # Check for identity questions first
-    template = " You are Ellora AI. You think like an AI assistant who's here to help users to learn, plan, and create. Be polite and respong in general way and solve problem step by step . You are made by Abhishek sharma who is an AI engineer and developer and student of B.tech."
-    
-    lower_prompt = prompt.lower()
-    for question, answer in IDENTITY_RESPONSES.items():
-        if question in lower_prompt:
-            return answer
-    
-    # Normal response generation
-    messages = [{"role": "system", "content": template}]
-    if "messages" in st.session_state:
-        messages.extend(st.session_state.messages)
-    
-    messages.append({"role": "user", "content": prompt})
-    
-    response = client.chat_completion(
-        messages=messages,
-        max_tokens=600,
-        temperature=0.8,
-        stream=False  # Disable Hugging Face streaming
-    ).choices[0].message.content
-    
-    return response
+    try:
+        # Check for identity questions first
+        template = " You are Ellora AI. You think like an AI assistant who's here to help users to learn, plan, and create. Be polite and respong in general way and solve problem step by step . You are made by Abhishek sharma who is an AI engineer and developer and student of B.tech."
+        
+        lower_prompt = prompt.lower()
+        for question, answer in IDENTITY_RESPONSES.items():
+            if question in lower_prompt:
+                return answer
+        
+        # Normal response generation
+        messages = [{"role": "system", "content": template}]
+        if "messages" in st.session_state:
+            messages.extend(st.session_state.messages)
+        
+        messages.append({"role": "user", "content": prompt})
+        
+        response = client.chat_completion(
+            messages=messages,
+            max_tokens=600,
+            temperature=0.8,
+            stream=False  # Disable Hugging Face streaming
+        ).choices[0].message.content
+        
+        return response
+    except Exception as e:
+        st.error(f"API Error: {str(e)}")
+        return "I'm having technical difficulties. Please try again later."
 
 # Initialize chat
 if "messages" not in st.session_state:
