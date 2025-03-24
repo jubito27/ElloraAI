@@ -1,4 +1,5 @@
 import streamlit as st
+import time  # Added this import
 from huggingface_hub import InferenceClient
 from secret import API_TOKEN
 
@@ -31,10 +32,9 @@ with st.sidebar:
 def enforce_identity(response):
     """Post-processing to ensure correct identity responses"""
     identity_phrases = {
-        "what is your name": "My name is Ellora AI , a AI made for your help.",
+        "what is your name": "My name is Ellora AI",
         "who created you": "I was created by Abhishek Sharma",
-        "who made you": "I was created by Abhishek Sharma" , 
-        "who is Abhishek sharma" : "Abhishek sharma is AI engineer and developer and also a Btech Student."
+        "who made you": "I was created by Abhishek Sharma"
     }
     
     lower_response = response.lower()
@@ -53,12 +53,18 @@ def generate_response(prompt):
     ]
     
     # Get complete response first (not streamed) to ensure consistency
-    response = client.chat_completion(
-        messages,
-        max_tokens=max_tokens,
-        stream=False,
-        temperature=temperature
-    ).choices[0].message.content
+    response = ""
+    try:
+        result = client.chat_completion(
+            messages,
+            max_tokens=max_tokens,
+            stream=False,
+            temperature=temperature
+        )
+        response = result.choices[0].message.content
+    except Exception as e:
+        st.error(f"Error generating response: {str(e)}")
+        return "I encountered an error. Please try again."
     
     # Enforce identity responses
     response = enforce_identity(response)
@@ -69,7 +75,7 @@ def generate_response(prompt):
     for word in words:
         partial += word + " "
         yield partial
-        time.sleep(0.05)
+        time.sleep(0.05)  # Now properly imported
 
 # Chat interface
 if prompt := st.chat_input("How can I help you?"):
