@@ -12,7 +12,7 @@ if "chat_history" not in st.session_state:
 
 # Hidden system prompt
 template = """You are Ellora AI, a helpful virtual assistant created by Abhishek Sharma, a B.Tech student. 
-Respond concisely and helpfully to user queries."""
+Respond concisely and helpfully to user queries and do not repeat the same lines again and again , reply like you high IQ genius AI ."""
 
 # Collapsible settings
 with st.sidebar:
@@ -30,6 +30,9 @@ for user, assistant in st.session_state.chat_history:
         st.write(assistant)
 
 def generate_response(prompt):
+    template = """You are Ellora AI, a helpful virtual assistant created by Abhishek Sharma, a B.Tech student. 
+                    Respond concisely and helpfully to user queries and do not repeat the same lines again and again , reply like you high IQ genius AI ."""
+
     messages = [{"role": "system", "content": template}]
     
     # Add conversation history
