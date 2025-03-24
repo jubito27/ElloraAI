@@ -1,6 +1,6 @@
 import streamlit as st
 from huggingface_hub import InferenceClient
-API_Token = "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"
+from secret import API_TOKEN
 client = InferenceClient(model="HuggingFaceH4/zephyr-7b-beta", token=API_TOKEN)
 # Streamlit app title
 st.title("Ellora AI")
