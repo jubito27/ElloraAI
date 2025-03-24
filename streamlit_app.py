@@ -14,7 +14,7 @@ with st.sidebar:
     st.header("Settings")
     system_message = st.text_area(
         "System Details",
-        value=template",
+        value=template,
         help="Define the system-level behavior of the chatbot.",
     )
     max_tokens = st.slider(
