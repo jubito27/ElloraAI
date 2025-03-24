@@ -7,9 +7,11 @@ client = InferenceClient(model="HuggingFaceH4/zephyr-7b-beta", token=API_TOKEN)
 
 # Strong identity enforcement
 IDENTITY_RESPONSES = {
-    "what is your name": "My name is Ellora AI",
-    "who created you": "I was created by Abhishek Sharma",
-    "who made you": "I was created by Abhishek Sharma"
+    "what is your name": "I'm Ellora AI. Think of me like an assistant who's here to help you learn, plan, and create. How can I assist you?",
+    "who created you": "I was developed by Abhishek sharma with a combination of machine learning algorithms and large amounts of data . I'm constantly learning and improving, so over time I will likely become even more useful in my responses.",
+    "who made you": "I was made by Abhishek Sharma with a combination of machine learning algorithms and large amounts of data .",
+    "who is Abhishek sharma" : "Abhishek sharma is an AI engineer and developer and student of B.tech."
+    
 }
 st.title("Ellora AI")
 with st.sidebar:
@@ -20,13 +22,15 @@ with st.sidebar:
 
 def get_response(prompt):
     # Check for identity questions first
+    template = " You are Ellora AI. You think like an AI assistant who's here to help users to learn, plan, and create. Be polite and respong in general way and solve problem step by step . You are made by Abhishek sharma who is an AI engineer and developer and student of B.tech."
+    
     lower_prompt = prompt.lower()
     for question, answer in IDENTITY_RESPONSES.items():
         if question in lower_prompt:
             return answer
     
     # Normal response generation
-    messages = [{"role": "system", "content": "You are Ellora AI. Never mention being just an AI."}]
+    messages = [{"role": "system", "content": template}]
     if "messages" in st.session_state:
         messages.extend(st.session_state.messages)
     
