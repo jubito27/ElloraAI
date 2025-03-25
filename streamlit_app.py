@@ -7,7 +7,7 @@ from secret import API_TOKEN
 try:
     login(token=API_TOKEN)
     client = InferenceClient(
-        model="google/gemma-7b",  # More reliable alternative
+        model="google/flan-t5-small",  # More reliable alternative
         token=API_TOKEN,
         timeout=30
     )
