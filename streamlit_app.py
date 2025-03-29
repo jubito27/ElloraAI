@@ -68,7 +68,11 @@ def get_response(prompt):
 
         # Normal response generation
         template = "You are Ellora AI. You think like an AI assistant who's here to help users learn, plan, and create. Be polite and respond in a general way, solving problems step by step. You were made by Abhishek Sharma, an AI engineer and developer."
+         messages = [{"role": "system", "content": template}]
+         if "messages" in st.session_state:
+             messages.extend(st.session_state.messages)
         
+         messages.append({"role": "user", "content": prompt})
         # Format the input for T5 (add the template to the prompt)
         input_text = f"{template}\n\nUser: {prompt}\nAI:"
         
