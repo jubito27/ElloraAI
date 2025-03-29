@@ -5,10 +5,10 @@ from secret import API_TOKEN
 
 #client = InferenceClient(model="HuggingFaceH4/zephyr-7b-beta", token=API_TOKEN)
 try:
-    #login(token=API_TOKEN)
+    login(token=API_TOKEN)
     client = InferenceClient(
-        model="google/flan-t5-small",  # More reliable alternative
-        #token=API_TOKEN,
+        model="google-t5/t5-small",  # More reliable alternative
+        token=API_TOKEN,
         timeout=30
     )
 except Exception as e:
