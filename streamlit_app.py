@@ -3,7 +3,7 @@ import time
 from transformers import pipeline
 from huggingface_hub import login
 from secret import API_TOKEN , NEW_TOKEN
-
+import torch
 #client = InferenceClient(model="HuggingFaceH4/zephyr-7b-beta", token=API_TOKEN)
 try:
     login(token="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")
