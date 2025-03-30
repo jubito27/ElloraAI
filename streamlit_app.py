@@ -1,13 +1,13 @@
 import streamlit as st
 import time
 from transformers import pipeline
-from secret import API_TOKEN
+#from secret import API_TOKEN
 
 #client = InferenceClient(model="HuggingFaceH4/zephyr-7b-beta", token=API_TOKEN)
 try:
     client = pipeline(
         "text2text-generation",  # T5 is a text-to-text model
-        model="google-t5/t5-small",
+        model="TinyLlama/TinyLlama-1.1B-Chat-v1.0",
         device="cpu"  # Use "cuda" if you have a GPU
     )
 except Exception as e:
@@ -68,11 +68,11 @@ def get_response(prompt):
 
         # Normal response generation
         template = "You are Ellora AI. You think like an AI assistant who's here to help users learn, plan, and create. Be polite and respond in a general way, solving problems step by step. You were made by Abhishek Sharma, an AI engineer and developer."
-         messages = [{"role": "system", "content": template}]
-         if "messages" in st.session_state:
-             messages.extend(st.session_state.messages)
+        messages = [{"role": "system", "content": template}]
+        if "messages" in st.session_state:
+            messages.extend(st.session_state.messages)
         
-         messages.append({"role": "user", "content": prompt})
+        messages.append({"role": "user", "content": prompt})
         # Format the input for T5 (add the template to the prompt)
         input_text = f"{template}\n\nUser: {prompt}\nAI:"
         
@@ -81,6 +81,7 @@ def get_response(prompt):
             input_text,
             max_length=max_tokens,
             temperature=temperature,
+            #stream=False,
             do_sample=True
         )[0]['generated_text']
         
