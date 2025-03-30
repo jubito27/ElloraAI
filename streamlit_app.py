@@ -12,7 +12,9 @@ try:
         #model="google/flan-t5-small",
         #model="meta-llama/Llama-2-7b-chat-hf",
         model="mistralai/Mistral-7B-Instruct-v0.1",
-        device="cpu"  # Use "cuda" if you have a GPU
+        device="cpu",
+        torch_dtype=torch.float16,
+        model_kwargs={"load_in_4bit": True}# Use "cuda" if you have a GPU
     )
 except Exception as e:
     st.error(f"Failed to initialize model: {str(e)}")
