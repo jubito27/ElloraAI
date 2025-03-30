@@ -6,7 +6,7 @@ from secret import API_TOKEN , NEW_TOKEN
 
 #client = InferenceClient(model="HuggingFaceH4/zephyr-7b-beta", token=API_TOKEN)
 try:
-    login(token="NEW_TOKEN")
+    login(token="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")
     client = pipeline(
         "text2text-generation",  # T5 is a text-to-text model
         #model="google/flan-t5-small",
