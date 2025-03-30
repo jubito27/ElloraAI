@@ -3,4 +3,5 @@ transformers>=4.35.0
 torch>=2.0.0  # Required for transformers (CPU/GPU support)
 sentencepiece>=0.1.99  # Tokenizer dependency for T5
 accelerate>=0.24.0  # Optimizes inference
+huggingface_hub==0.25.2
 
