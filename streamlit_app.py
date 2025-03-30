@@ -8,7 +8,7 @@ try:
     client = pipeline(
         "text2text-generation",  # T5 is a text-to-text model
         #model="google/flan-t5-small",
-        model="HuggingFaceH4/zephyr-7b-beta",
+        model="HuggingFaceH4/zephyr-7b-alpha",
         device="cpu"  # Use "cuda" if you have a GPU
     )
 except Exception as e:
