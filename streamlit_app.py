@@ -1,10 +1,17 @@
 import streamlit as st
 import time
-from transformers import pipeline , bitsandbytes
+from transformers import pipeline ,  BitsAndBytesConfig
 from huggingface_hub import login
 from secret import API_TOKEN , NEW_TOKEN
 import torch
 #client = InferenceClient(model="HuggingFaceH4/zephyr-7b-beta", token=API_TOKEN)
+
+bnb_config = BitsAndBytesConfig(
+    load_in_4bit=True,           # 4-bit quantization
+    bnb_4bit_use_double_quant=True,
+    bnb_4bit_quant_type="nf4",   # Normalized Float 4-bit
+    bnb_4bit_compute_dtype=torch.float16
+)
 try:
     login(token="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")
     client = pipeline(
@@ -14,6 +21,8 @@ try:
         model="mistralai/Mistral-7B-Instruct-v0.1",
         device="cpu",
         torch_dtype=torch.float16,
+        quantization_config=bnb_config,  # Apply 4-bit
+
         model_kwargs={"load_in_4bit": True}# Use "cuda" if you have a GPU
     )
 except Exception as e:
