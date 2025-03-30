@@ -1,10 +1,12 @@
 import streamlit as st
 import time
 from transformers import pipeline
-#from secret import API_TOKEN
+from huggingface_hub import login
+from secret import API_TOKEN
 
 #client = InferenceClient(model="HuggingFaceH4/zephyr-7b-beta", token=API_TOKEN)
 try:
+    login(token="API_TOKEN")
     client = pipeline(
         "text2text-generation",  # T5 is a text-to-text model
         #model="google/flan-t5-small",
