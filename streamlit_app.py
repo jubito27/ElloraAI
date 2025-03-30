@@ -6,12 +6,12 @@ from secret import API_TOKEN , NEW_TOKEN
 import torch
 #client = InferenceClient(model="HuggingFaceH4/zephyr-7b-beta", token=API_TOKEN)
 
-bnb_config = BitsAndBytesConfig(
-    load_in_4bit=True,           # 4-bit quantization
-    bnb_4bit_use_double_quant=True,
-    bnb_4bit_quant_type="nf4",   # Normalized Float 4-bit
-    bnb_4bit_compute_dtype=torch.float16
-)
+# bnb_config = BitsAndBytesConfig(
+#     load_in_4bit=True,           # 4-bit quantization
+#     bnb_4bit_use_double_quant=True,
+#     bnb_4bit_quant_type="nf4",   # Normalized Float 4-bit
+#     bnb_4bit_compute_dtype=torch.float16
+# )
 try:
     login(token="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")
     client = pipeline(
@@ -19,11 +19,11 @@ try:
         #model="google/flan-t5-small",
         #model="meta-llama/Llama-2-7b-chat-hf",
         model="mistralai/Mistral-7B-Instruct-v0.1",
-        device="cpu",
-        torch_dtype=torch.float16,
+        device=-1,
+        torch_dtype=torch.float32,
         quantization_config=bnb_config,  # Apply 4-bit
 
-        model_kwargs={"load_in_4bit": True}# Use "cuda" if you have a GPU
+        model_kwargs={"load_in_4bit": False}# Use "cuda" if you have a GPU
     )
 except Exception as e:
     st.error(f"Failed to initialize model: {str(e)}")
@@ -89,18 +89,18 @@ def get_response(prompt):
         
         messages.append({"role": "user", "content": prompt})
         # Format the input for T5 (add the template to the prompt)
-        input_text = f"{template}\n\nUser: {prompt}\nAI:"
+        #input_text = f"{template}\n\nUser: {prompt}\nAI:"
         
         # Generate response
         response = client(
-            input_text,
+            prompt,
             max_length=max_tokens,
             temperature=temperature,
             #stream=False,
             do_sample=True
         )[0]['generated_text']
         
-        return response.split("AI:")[-1].strip()  # Extract only the AI's part
+        return response.split#("AI:")[-1].strip()  # Extract only the AI's part
     except Exception as e:
         st.error(f"Error: {str(e)}")
         return "I'm having technical difficulties. Please try again later."
