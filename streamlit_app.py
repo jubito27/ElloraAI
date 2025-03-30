@@ -7,7 +7,7 @@ from transformers import pipeline
 try:
     client = pipeline(
         "text2text-generation",  # T5 is a text-to-text model
-        model="TinyLlama/TinyLlama-1.1B-Chat-v1.0",
+        model="deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B",
         device="cpu"  # Use "cuda" if you have a GPU
     )
 except Exception as e:
