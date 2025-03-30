@@ -21,7 +21,7 @@ try:
         model="mistralai/Mistral-7B-Instruct-v0.1",
         device=-1,
         torch_dtype=torch.float32,
-        quantization_config=bnb_config,  # Apply 4-bit
+        #quantization_config=bnb_config,  # Apply 4-bit
 
         model_kwargs={"load_in_4bit": False}# Use "cuda" if you have a GPU
     )
