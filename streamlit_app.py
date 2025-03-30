@@ -1,6 +1,6 @@
 import streamlit as st
 import time
-from transformers import pipeline
+from transformers import pipeline , bitsandbytes
 from huggingface_hub import login
 from secret import API_TOKEN , NEW_TOKEN
 import torch
