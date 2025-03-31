@@ -1,21 +1,21 @@
 import streamlit as st
 import time
-from transformers import pipeline ,  BitsAndBytesConfig
-from transformers import AutoModelForCausalLM , AutoTokenizer
+from transformers import pipeline #,  BitsAndBytesConfig
+#from transformers import AutoModelForCausalLM , AutoTokenizer
 from huggingface_hub import login
 from secret import API_TOKEN , NEW_TOKEN
-import torch
+#import torch
 #client = InferenceClient(model="HuggingFaceH4/zephyr-7b-beta", token=API_TOKEN)
 
-bnb_config = BitsAndBytesConfig(
-    load_in_4bit=True,           # 4-bit quantization
-    bnb_4bit_use_double_quant=True,
-    bnb_4bit_quant_type="nf4",   # Normalized Float 4-bit
-    bnb_4bit_compute_dtype=torch.float16
-)
+# bnb_config = BitsAndBytesConfig(
+#     load_in_4bit=True,           # 4-bit quantization
+#     bnb_4bit_use_double_quant=True,
+#     bnb_4bit_quant_type="nf4",   # Normalized Float 4-bit
+#     bnb_4bit_compute_dtype=torch.float16
+# )
 #rm -rf ~/.cache/huggingface/hub/models--Qwen--Qwen1.5-7B
 try:
-    login(token="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")
+    #login(token="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")
     client = pipeline(
         "text2text-generation",  # T5 is a text-to-text model
         model="Qwen/Qwen1.5-1.8B",
