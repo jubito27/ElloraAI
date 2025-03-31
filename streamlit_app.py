@@ -19,7 +19,7 @@ try:
         "text2text-generation",  # T5 is a text-to-text model
         #model="google/flan-t5-small",
         #model="meta-llama/Llama-2-7b-chat-hf",
-        model = AutoModelForCausalLM.from_pretrained("Qwen/Qwen1.5-7B",model_file="Qwen/Qwen1.5-7B",gpu_layers=0),
+        model = AutoModelForCausalLM.from_pretrained("Qwen/Qwen1.5-7B",gpu_layers=0),
         device=-1,
         torch_dtype=torch.float32,
         #quantization_config=bnb_config,  # Apply 4-bit
