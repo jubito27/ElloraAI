@@ -1,7 +1,7 @@
 import streamlit as st
 import time
 from transformers import pipeline ,  BitsAndBytesConfig
-from transformers import AutoModelForCausalLM
+from transformers import AutoModelForCausalLM , AutoTokenizer
 from huggingface_hub import login
 from secret import API_TOKEN , NEW_TOKEN
 import torch
@@ -13,19 +13,23 @@ bnb_config = BitsAndBytesConfig(
     bnb_4bit_quant_type="nf4",   # Normalized Float 4-bit
     bnb_4bit_compute_dtype=torch.float16
 )
+rm -rf ~/.cache/huggingface/hub/models--Qwen--Qwen1.5-7B
 try:
     login(token="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")
     client = pipeline(
         "text2text-generation",  # T5 is a text-to-text model
         #model="google/flan-t5-small",
         #model="meta-llama/Llama-2-7b-chat-hf",
-        model = AutoModelForCausalLM.from_pretrained("Qwen/Qwen1.5-7B",device_map="auto"),
+        model = AutoModelForCausalLM.from_pretrained("Qwen/Qwen1.5-7B",device_map="auto", force_download=True),
         device=-1,
         torch_dtype=torch.float32,
-        #quantization_config=bnb_config,  # Apply 4-bit
+        trust_remote_code = True,
+        quantization_config=bnb_config,  # Apply 4-bit
 
         model_kwargs={"load_in_4bit": False}# Use "cuda" if you have a GPU
     )
+    tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen1.5-7B")
+
 except Exception as e:
     st.error(f"Failed to initialize model: {str(e)}")
     st.stop()
