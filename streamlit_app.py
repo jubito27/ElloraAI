@@ -22,9 +22,9 @@ try:
         #model="meta-llama/Llama-2-7b-chat-hf",
         #model = AutoModelForCausalLM.from_pretrained("Qwen/Qwen1.5-1.8B",device_map="auto", force_download=True),
         device=-1,
-        torch_dtype=torch.float32,
-        trust_remote_code = True,
-        quantization_config=bnb_config,  # Apply 4-bit
+        #torch_dtype=torch.float32,
+        #trust_remote_code = True,
+        #quantization_config=bnb_config,  # Apply 4-bit
 
         model_kwargs={"load_in_4bit": False}# Use "cuda" if you have a GPU
     )
