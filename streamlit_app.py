@@ -13,7 +13,7 @@ bnb_config = BitsAndBytesConfig(
     bnb_4bit_quant_type="nf4",   # Normalized Float 4-bit
     bnb_4bit_compute_dtype=torch.float16
 )
-rm -rf ~/.cache/huggingface/hub/models--Qwen--Qwen1.5-7B
+#rm -rf ~/.cache/huggingface/hub/models--Qwen--Qwen1.5-7B
 try:
     login(token="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")
     client = pipeline(
