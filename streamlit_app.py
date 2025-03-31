@@ -1,6 +1,6 @@
 import streamlit as st
 import time
-from transformers import pipeline #,  BitsAndBytesConfig
+from transformers import pipeline 
 #from transformers import AutoModelForCausalLM , AutoTokenizer
 from huggingface_hub import login
 from secret import API_TOKEN , NEW_TOKEN
@@ -26,7 +26,7 @@ try:
         #trust_remote_code = True,
         #quantization_config=bnb_config,  # Apply 4-bit
 
-        model_kwargs={"load_in_4bit": False}# Use "cuda" if you have a GPU
+        #model_kwargs={"load_in_4bit": False}# Use "cuda" if you have a GPU
     )
     #tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen1.5-7B")
 
