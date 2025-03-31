@@ -17,7 +17,7 @@ from secret import API_TOKEN , NEW_TOKEN
 try:
     #login(token="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")
     client = pipeline(
-        "text2text-generation",  # T5 is a text-to-text model
+        "text-generation",  # T5 is a text-to-text model
         model="Qwen/Qwen1.5-1.8B",
         #model="meta-llama/Llama-2-7b-chat-hf",
         #model = AutoModelForCausalLM.from_pretrained("Qwen/Qwen1.5-1.8B",device_map="auto", force_download=True),
