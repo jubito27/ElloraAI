@@ -18,9 +18,9 @@ try:
     login(token="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")
     client = pipeline(
         "text2text-generation",  # T5 is a text-to-text model
-        #model="google/flan-t5-small",
+        model="Qwen/Qwen1.5-1.8B",
         #model="meta-llama/Llama-2-7b-chat-hf",
-        model = AutoModelForCausalLM.from_pretrained("Qwen/Qwen1.5-1.8B",device_map="auto", force_download=True),
+        #model = AutoModelForCausalLM.from_pretrained("Qwen/Qwen1.5-1.8B",device_map="auto", force_download=True),
         device=-1,
         torch_dtype=torch.float32,
         trust_remote_code = True,
@@ -28,7 +28,7 @@ try:
 
         model_kwargs={"load_in_4bit": False}# Use "cuda" if you have a GPU
     )
-    tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen1.5-7B")
+    #tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen1.5-7B")
 
 except Exception as e:
     st.error(f"Failed to initialize model: {str(e)}")
