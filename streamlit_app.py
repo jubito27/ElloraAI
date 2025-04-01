@@ -1,35 +1,38 @@
 import streamlit as st
 import time
-from transformers import pipeline 
-#from transformers import AutoModelForCausalLM , AutoTokenizer
+from transformers import pipeline , BitsAndBytesConfig
+from transformers import AutoModelForCausalLM
+import torch
 from huggingface_hub import login
-from secret import API_TOKEN , NEW_TOKEN
-#import torch
-#client = InferenceClient(model="HuggingFaceH4/zephyr-7b-beta", token=API_TOKEN)
+#from secret import API_TOKEN
 
+#client = InferenceClient(model="HuggingFaceH4/zephyr-7b-beta", token=API_TOKEN)
 # bnb_config = BitsAndBytesConfig(
 #     load_in_4bit=True,           # 4-bit quantization
 #     bnb_4bit_use_double_quant=True,
 #     bnb_4bit_quant_type="nf4",   # Normalized Float 4-bit
-#     bnb_4bit_compute_dtype=torch.float16
+#     bnb_4bit_compute_dtype=torch.float32
 # )
-#rm -rf ~/.cache/huggingface/hub/models--Qwen--Qwen1.5-7B
 try:
-    #login(token="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")
+    login(token="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")
+    model = AutoModelForCausalLM.from_pretrained(
+        "Qwen/Qwen1.5-1.8B",
+        device_map="auto",
+        #quantization_config=bnb_config
+    )
     client = pipeline(
         "text-generation",  # T5 is a text-to-text model
-        model="Qwen/Qwen1.5-1.8B",
+        #model="google/flan-t5-small",
         #model="meta-llama/Llama-2-7b-chat-hf",
-        #model = AutoModelForCausalLM.from_pretrained("Qwen/Qwen1.5-1.8B",device_map="auto", force_download=True),
-        device=-1,
-        #torch_dtype=torch.float32,
-        #trust_remote_code = True,
+        #model="meta-llama/Llama-3.2-3B-Instruct",
+        #model="Qwen/Qwen2.5-VL-3B-Instruct",
+        model = model,
+        device=0,
+        torch_dtype=torch.float32,
         #quantization_config=bnb_config,  # Apply 4-bit
 
-        #model_kwargs={"load_in_4bit": False}# Use "cuda" if you have a GPU
+        model_kwargs={"load_in_4bit": False}# Use "cuda" if you have a GPU
     )
-    #tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen1.5-7B")
-
 except Exception as e:
     st.error(f"Failed to initialize model: {str(e)}")
     st.stop()
@@ -49,34 +52,6 @@ with st.sidebar:
         max_tokens = st.slider("Response Length", 100, 1000, 400)
         temperature = st.slider("Creativity", 0.1, 1.5, 0.7)
 
-# def get_response(prompt):
-#     try:
-#         # Check for identity questions first
-#         template = " You are Ellora AI. You think like an AI assistant who's here to help users to learn, plan, and create. Be polite and respong in general way and solve problem step by step . You are made by Abhishek sharma who is an AI engineer and developer and student of B.tech."
-        
-#         lower_prompt = prompt.lower()
-#         for question, answer in IDENTITY_RESPONSES.items():
-#             if question in lower_prompt:
-#                 return answer
-        
-#         # Normal response generation
-#         messages = [{"role": "system", "content": template}]
-#         if "messages" in st.session_state:
-#             messages.extend(st.session_state.messages)
-        
-#         messages.append({"role": "user", "content": prompt})
-        
-#         response = client.chat_completion(
-#             messages=messages,
-#             max_tokens=600,
-#             temperature=0.8,
-#             stream=False  # Disable Hugging Face streaming
-#         ).choices[0].message.content
-        
-#         return response
-#     except Exception as e:
-#         st.error(f"API Error: {str(e)}")
-#         return "I'm having technical difficulties. Please try again later."
 
 def get_response(prompt):
     try:
@@ -138,6 +113,9 @@ if prompt := st.chat_input("Ask me anything"):
         
         # Ensure final clean version
         placeholder.markdown(response)
+    
+    # Save to history
+    st.session_state.messages.append({"role": "assistant", "content": response})
     
     # Save to history
     st.session_state.messages.append({"role": "assistant", "content": response})
