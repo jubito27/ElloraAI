@@ -6,19 +6,19 @@ import torch
 from huggingface_hub import login
 #from secret import API_TOKEN
 
-#client = InferenceClient(model="HuggingFaceH4/zephyr-7b-beta", token=API_TOKEN)
-# bnb_config = BitsAndBytesConfig(
-#     load_in_4bit=True,           # 4-bit quantization
-#     bnb_4bit_use_double_quant=True,
-#     bnb_4bit_quant_type="nf4",   # Normalized Float 4-bit
-#     bnb_4bit_compute_dtype=torch.float32
-# )
+client = InferenceClient(model="HuggingFaceH4/zephyr-7b-beta", token=API_TOKEN)
+bnb_config = BitsAndBytesConfig(
+    load_in_4bit=True,           # 4-bit quantization
+    bnb_4bit_use_double_quant=True,
+    bnb_4bit_quant_type="nf4",   # Normalized Float 4-bit
+    bnb_4bit_compute_dtype=torch.float32
+)
 try:
     login(token="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")
     model = AutoModelForCausalLM.from_pretrained(
         "Qwen/Qwen1.5-1.8B",
         device_map="auto",
-        #quantization_config=bnb_config
+        quantization_config=bnb_config
     )
     client = pipeline(
         "text-generation",  # T5 is a text-to-text model
@@ -29,7 +29,7 @@ try:
         model = model,
         device=0,
         torch_dtype=torch.float32,
-        #quantization_config=bnb_config,  # Apply 4-bit
+        quantization_config=bnb_config,  # Apply 4-bit
 
         model_kwargs={"load_in_4bit": False}# Use "cuda" if you have a GPU
     )
