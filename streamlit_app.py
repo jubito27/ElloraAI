@@ -6,7 +6,7 @@ import torch
 from huggingface_hub import login
 #from secret import API_TOKEN
 
-client = InferenceClient(model="HuggingFaceH4/zephyr-7b-beta", token=API_TOKEN)
+#client = InferenceClient(model="HuggingFaceH4/zephyr-7b-beta", token=API_TOKEN)
 bnb_config = BitsAndBytesConfig(
     load_in_4bit=True,           # 4-bit quantization
     bnb_4bit_use_double_quant=True,
