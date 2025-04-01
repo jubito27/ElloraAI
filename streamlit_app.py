@@ -31,7 +31,7 @@ try:
         torch_dtype=torch.float32,
         quantization_config=bnb_config,  # Apply 4-bit
 
-        model_kwargs={"load_in_4bit": False}# Use "cuda" if you have a GPU
+        model_kwargs={"load_in_4bit": True }# Use "cuda" if you have a GPU
     )
 except Exception as e:
     st.error(f"Failed to initialize model: {str(e)}")
