@@ -28,7 +28,7 @@ try:
         #model="Qwen/Qwen2.5-VL-3B-Instruct",
         model = model,
         device=0,
-        torch_dtype=torch.float32,
+        torch_dtype=torch.bfloat32,
         #quantization_config=bnb_config,  # Apply 4-bit
 
         model_kwargs={"load_in_4bit": True }# Use "cuda" if you have a GPU
