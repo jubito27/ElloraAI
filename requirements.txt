@@ -6,4 +6,6 @@ accelerate>=0.24.0  # Optimizes inference
 huggingface_hub==0.25.2
 bitsandbytes >= 0.45.0
 langchain==0.1.16
+langchain-community==0.2.0
+
 
