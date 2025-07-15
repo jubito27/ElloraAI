@@ -1,2 +1,0 @@
-API_TOKEN = "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"
-NEW_TOKEN = "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"
