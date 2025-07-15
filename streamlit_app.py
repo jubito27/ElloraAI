@@ -9,6 +9,7 @@ import time
 from gtts import gTTS
 import pygame
 import tempfile
+from dotenv import dotenv_values
 from Ellora_vyasa import get_vedic_response
 
 # Initialize pygame for audio playback
@@ -16,7 +17,9 @@ pygame.mixer.init()
 
 # ---- CONFIG ----
 st.set_page_config(page_title="Ellora AI - Sarcastic Assistant", layout="centered", page_icon="🤖" ,  initial_sidebar_state="expanded")
-genai.configure(api_key="AIzaSyB3ooJJc_J3TXLSR3UM0-ULmy8Az-PUk28")  # Replace with your API key
+env_var = dotenv_values(".env")
+api_key = env_var.get("API_KEY")
+genai.configure(api_key=api_key)  # Replace with your API key
 model = genai.GenerativeModel(model_name="gemini-2.0-flash")
 
 avatars = {
