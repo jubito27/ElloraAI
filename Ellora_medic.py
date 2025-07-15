@@ -3,6 +3,7 @@ from langchain_community.vectorstores import Chroma
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.chains import RetrievalQA
+from dotenv import dotenv_values
 import streamlit as st
 
 def get_medic_response(query):
@@ -42,7 +43,8 @@ def initialize_qa_chain(persist_directory="chroma-medic-store"):
             embedding_function=embeddings
         )
          # Load existing data from ChromaDB
-        api_key = "AIzaSyB3ooJJc_J3TXLSR3UM0-ULmy8Az-PUk28" 
+        env_var = dotenv_values(".env")
+        api_key = env_var.get("API_KEY")
         llm = ChatGoogleGenerativeAI(api_key=api_key,model="gemini-2.0-flash", temperature=0.7)
         return RetrievalQA.from_chain_type(
             llm=llm,
@@ -54,10 +56,10 @@ def initialize_qa_chain(persist_directory="chroma-medic-store"):
         st.error(f"Knowledge system initialization failed: {e}")
         return None
 
-if __name__ == "__main__":
-    # Example usage
-    while True:
-        query = input("Enter your question about Medic texts (or type 'exit' to quit): ")
-        if query.lower() == 'exit':
-            break
-        get_medic_response(query)
+# if __name__ == "__main__":
+#     # Example usage
+#     while True:
+#         query = input("Enter your question about Medic texts (or type 'exit' to quit): ")
+#         if query.lower() == 'exit':
+#             break
+#         get_medic_response(query)
