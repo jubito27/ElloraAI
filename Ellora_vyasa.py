@@ -42,7 +42,8 @@ def initialize_qa_chain(persist_directory="chromadbstore"):
             embedding_function=embeddings
         )
          # Load existing data from ChromaDB
-        api_key = "AIzaSyB3ooJJc_J3TXLSR3UM0-ULmy8Az-PUk28" 
+        env_var = dotenv_values(".env")
+        api_key = env_var.get("API_KEY")
         llm = ChatGoogleGenerativeAI(api_key=api_key,model="gemini-2.0-flash", temperature=0.7)
         return RetrievalQA.from_chain_type(
             llm=llm,
