@@ -9,7 +9,7 @@ import time
 from gtts import gTTS
 import pygame
 import tempfile
-from dotenv import env_values
+from dotenv import dotenv_values
 from Ellora_vyasa import get_vedic_response
 from Ellora_medic import get_medic_response
 
