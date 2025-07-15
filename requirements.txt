@@ -1,11 +1,15 @@
-streamlit>=1.28.0
-transformers>=4.45.1
-torch>=2.0.0  # Required for transformers (CPU/GPU support)
-sentencepiece>=0.1.99  # Tokenizer dependency for T5
-accelerate>=0.24.0  # Optimizes inference
-huggingface_hub==0.25.2
-bitsandbytes >= 0.45.0
-langchain==0.1.16
-langchain-community==0.2.0
-
-
+streamlit
+google-generativeai
+langchain
+langchain-community
+langchain-google-genai
+langchain-huggingface
+chromadb
+pillow
+gtts
+pygame
+speechrecognition
+transformers
+sentence-transformers
+huggingface-hub
+tiktoken
