@@ -266,11 +266,17 @@ if voice_input:
         # Generate and display assistant response
         with st.chat_message("assistant", avatar=avatar):
             creator_list = ["your creator", "your maker" , "who made you" , "who created you" , "who build you" , "who build you" , "who is your master" , "who is your creator" ,  "who is your buildor"]
-            user_identity_list = ["abhishek sharma" , "abhishek"]
-            if creator_list in prompt.lower():
-                response = "I am created by Abhishek Sharma - an AI Engineer !"
-            elif user_identity_list in prompt.lower():
-                response = "It is not allowed me to provide information about my creator Abhishek Sharma"
+            restricted_names = ["abhishek sharma", "abhishek"]
+        
+            user_input_lower = user_input.lower()  # Convert to lowercase once
+            
+            # Check if ANY keyword from creator_keywords is in the prompt
+            if any(keyword in user_input_lower for keyword in creator_keywords):
+                response = "I was created by Abhishek Sharma, an AI Engineer! 🚀"
+            
+            # Check if ANY name from restricted_names is in the prompt
+            elif any(name in user_input_lower for name in restricted_names):
+                response = "I'm not allowed to disclose personal information about my creator."
             else:
                 response = generate_response(prompt, st.session_state.role, uploaded_image, uploaded_file)
                 placeholder = st.empty()
@@ -306,11 +312,17 @@ if prompt := st.chat_input("Type your message here..."):
     # Generate and display assistant response
     with st.chat_message("assistant", avatar=avatar):
         creator_list = ["your creator", "your maker" , "who made you" , "who created you" , "who build you" , "who build you" , "who is your master" , "who is your creator" ,  "who is your buildor"]
-        user_identity_list = ["abhishek sharma" , "abhishek"]
-        if creator_list in prompt.lower():
-            response = "I am created by Abhishek Sharma - an AI Engineer !"
-        elif user_identity_list in prompt.lower():
-            response = "It is not allowed me to provide information about my creator Abhishek Sharma"
+        restricted_names = ["abhishek sharma", "abhishek"]
+        
+        prompt_lower = prompt.lower()  # Convert to lowercase once
+        
+        # Check if ANY keyword from creator_keywords is in the prompt
+        if any(keyword in prompt_lower for keyword in creator_keywords):
+            response = "I was created by Abhishek Sharma, an AI Engineer! 🚀"
+        
+        # Check if ANY name from restricted_names is in the prompt
+        elif any(name in prompt_lower for name in restricted_names):
+            response = "I'm not allowed to disclose personal information about my creator."
         else:
             response = generate_response(prompt, st.session_state.role, uploaded_image, uploaded_file)
             placeholder = st.empty()
