@@ -14,8 +14,6 @@ from io import BytesIO
 from Ellora_vyasa import get_vedic_response
 from Ellora_medic import get_medic_response
 
-# Initialize pygame for audio playback
-pygame.mixer.init()
 
 # ---- CONFIG ----
 st.set_page_config(page_title="Ellora AI - Sarcastic Assistant", layout="centered", page_icon="🤖" ,  initial_sidebar_state="expanded")
