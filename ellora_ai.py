@@ -9,7 +9,6 @@ import time
 from gtts import gTTS
 import pygame
 import tempfile
-from dotenv import dotenv_values
 from io import BytesIO
 from Ellora_vyasa import get_vedic_response
 from Ellora_medic import get_medic_response
@@ -17,8 +16,7 @@ from Ellora_medic import get_medic_response
 
 # ---- CONFIG ----
 st.set_page_config(page_title="Ellora AI - Multi Personality Assistant", layout="centered", page_icon="🤖" ,  initial_sidebar_state="expanded")
-env_var = dotenv_values(".env")
-api_key = env_var.get("API_KEY")
+genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
 model = genai.GenerativeModel(model_name="gemini-2.0-flash")
 
 avatars = {
