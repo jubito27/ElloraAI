@@ -215,7 +215,7 @@ def speech_to_text():
 if "messages" not in st.session_state:
     st.session_state.messages = []
 if "role" not in st.session_state:
-    st.session_state.role = "Sarcastic"
+    st.session_state.role = "Friendly"
 if "audio_reply" not in st.session_state:
     st.session_state.audio_reply = False
 if "listening" not in st.session_state:
