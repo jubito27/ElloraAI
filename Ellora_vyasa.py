@@ -43,7 +43,7 @@ def initialize_qa_chain(persist_directory="chromadbstore"):
         )
          # Load existing data from ChromaDB
         env_var = dotenv_values(".env")
-        api_key = env_var.get("API_KEY")
+        api_key = genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
         llm = ChatGoogleGenerativeAI(api_key=api_key,model="gemini-2.0-flash", temperature=0.7)
         return RetrievalQA.from_chain_type(
             llm=llm,
