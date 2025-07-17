@@ -10,6 +10,7 @@ from gtts import gTTS
 import pygame
 import tempfile
 from dotenv import dotenv_values
+from io import BytesIO
 from Ellora_vyasa import get_vedic_response
 from Ellora_medic import get_medic_response
 
@@ -60,24 +61,21 @@ def get_instruction(role):
         return "You are Ellora AI, a helpful assistant."
 
 def text_to_speech(text):
-    try:
-        with st.spinner("Generating audio response..."):
-            tts = gTTS(text=text, lang='en')
-            with tempfile.NamedTemporaryFile(delete=False, suffix=".mp3") as fp:
-                temp_file_path = fp.name
-                tts.save(temp_file_path)
-            
-            # Play the audio
-            pygame.mixer.music.load(temp_file_path)
-            pygame.mixer.music.play()
-            
-            # Wait for playback to finish
-            while pygame.mixer.music.get_busy():
-                time.sleep(0.1)
-            
-            # Clean up
-            pygame.mixer.music.unload()
-            os.unlink(temp_file_path)
+    try :
+        tts = gTTS(text=text, lang='en' , tld='com', slow=False)
+        mp3_fp = BytesIO()
+        tts.write_to_fp(mp3_fp)
+        mp3_fp.seek(0)
+        audio_bytes = mp3_fp.read()
+    
+        b64 = base64.b64encode(audio_bytes).decode()
+        audio_html = f"""
+            <audio autoplay controls>
+            <source src="data:audio/mp3;base64,{b64}" type="audio/mp3">
+            Your browser does not support the audio element.
+            </audio>
+        """
+        st.markdown(audio_html, unsafe_allow_html=True)
     except Exception as e:
         st.error(f"Error in text-to-speech: {str(e)}")    
 
@@ -263,6 +261,7 @@ if voice_input:
         with st.chat_message("assistant", avatar=avatar):
             response = generate_response(user_input, st.session_state.role, uploaded_image, uploaded_file)
             placeholder = st.empty()
+            full_response = ""
             for word in response.split():
                 full_response += word + " "
                 placeholder.markdown(full_response)
