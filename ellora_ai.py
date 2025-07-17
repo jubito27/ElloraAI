@@ -265,7 +265,7 @@ if voice_input:
         
         # Generate and display assistant response
         with st.chat_message("assistant", avatar=avatar):
-            creator_list = ["your creator", "your maker" , "who made you" , "who created you" , "who build you" , "who build you" , "who is your master" , "who is your creator" ,  "who is your buildor"]
+            creator_keywords = ["your creator", "your maker" , "who made you" , "who created you" , "who build you" , "who build you" , "who is your master" , "who is your creator" ,  "who is your buildor"]
             restricted_names = ["abhishek sharma", "abhishek"]
         
             user_input_lower = user_input.lower()  # Convert to lowercase once
@@ -311,7 +311,7 @@ if prompt := st.chat_input("Type your message here..."):
     
     # Generate and display assistant response
     with st.chat_message("assistant", avatar=avatar):
-        creator_list = ["your creator", "your maker" , "who made you" , "who created you" , "who build you" , "who build you" , "who is your master" , "who is your creator" ,  "who is your buildor"]
+        creator_keywords = ["your creator", "your maker" , "who made you" , "who created you" , "who build you" , "who build you" , "who is your master" , "who is your creator" ,  "who is your buildor"]
         restricted_names = ["abhishek sharma", "abhishek"]
         
         prompt_lower = prompt.lower()  # Convert to lowercase once
