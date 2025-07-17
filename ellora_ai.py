@@ -22,7 +22,7 @@ api_key = env_var.get("API_KEY")
 model = genai.GenerativeModel(model_name="gemini-2.0-flash")
 
 avatars = {
-    "Sarcastic 😏": "😏",
+    "Sarcastic 🥱": "🥱",
     "Friendly 😊": "😊",
     "Professional 🧑‍💼": "🧑‍💼",
     "Vedic Vyasa 🕉️": "🕉️",
