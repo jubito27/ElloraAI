@@ -16,7 +16,7 @@ from Ellora_medic import get_medic_response
 
 
 # ---- CONFIG ----
-st.set_page_config(page_title="Ellora AI - Sarcastic Assistant", layout="centered", page_icon="🤖" ,  initial_sidebar_state="expanded")
+st.set_page_config(page_title="Ellora AI - Multi Personality Assistant", layout="centered", page_icon="🤖" ,  initial_sidebar_state="expanded")
 env_var = dotenv_values(".env")
 api_key = env_var.get("API_KEY")
 model = genai.GenerativeModel(model_name="gemini-2.0-flash")
