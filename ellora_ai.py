@@ -265,14 +265,20 @@ if voice_input:
         
         # Generate and display assistant response
         with st.chat_message("assistant", avatar=avatar):
-            response = generate_response(user_input, st.session_state.role, uploaded_image, uploaded_file)
-            placeholder = st.empty()
-            full_response = ""
-            for word in response.split():
-                full_response += word + " "
-                placeholder.markdown(full_response)
-                time.sleep(0.05)
-            
+            creator_list = ["your creator", "your maker" , "who made you" , "who created you" , "who build you" , "who build you" , "who is your master" , "who is your creator" ,  "who is your buildor"]
+            user_identity_list = ["abhishek sharma" , "abhishek"]
+            if creator_list in prompt.lower():
+                response = "I am created by Abhishek Sharma - an AI Engineer !"
+            elif user_identity_list in prompt.lower():
+                response = "It is not allowed me to provide information about my creator Abhishek Sharma"
+            else:
+                response = generate_response(prompt, st.session_state.role, uploaded_image, uploaded_file)
+                placeholder = st.empty()
+                full_response = ""
+                for word in response.split():
+                    full_response += word + " "
+                    placeholder.markdown(full_response)
+                    time.sleep(0.05)
             # Add assistant response to chat history
         st.session_state.messages.append(("🤖 Ellora", response))
             
@@ -299,13 +305,20 @@ if prompt := st.chat_input("Type your message here..."):
     
     # Generate and display assistant response
     with st.chat_message("assistant", avatar=avatar):
-        response = generate_response(prompt, st.session_state.role, uploaded_image, uploaded_file)
-        placeholder = st.empty()
-        full_response = ""
-        for word in response.split():
-            full_response += word + " "
-            placeholder.markdown(full_response)
-            time.sleep(0.05)
+        creator_list = ["your creator", "your maker" , "who made you" , "who created you" , "who build you" , "who build you" , "who is your master" , "who is your creator" ,  "who is your buildor"]
+        user_identity_list = ["abhishek sharma" , "abhishek"]
+        if creator_list in prompt.lower():
+            response = "I am created by Abhishek Sharma - an AI Engineer !"
+        elif user_identity_list in prompt.lower():
+            response = "It is not allowed me to provide information about my creator Abhishek Sharma"
+        else:
+            response = generate_response(prompt, st.session_state.role, uploaded_image, uploaded_file)
+            placeholder = st.empty()
+            full_response = ""
+            for word in response.split():
+                full_response += word + " "
+                placeholder.markdown(full_response)
+                time.sleep(0.05)
     
     # Add assistant response to chat history
     st.session_state.messages.append(("🤖 Ellora", response))
