@@ -270,8 +270,8 @@ if voice_input:
         
             user_input_lower = user_input.lower()  # Convert to lowercase once
             response = ""
-            if any(keyword in prompt_lower for keyword in creator_keywords):
-            response += "I was created by Abhishek Sharma, an AI Engineer! 🚀"
+            if any(keyword in prompt_lower for keyword in creator_keywords)
+                response += "I was created by Abhishek Sharma, an AI Engineer! 🚀"
         
             # Check if ANY name from restricted_names is in the prompt
             elif any(name in prompt_lower for name in restricted_names):
