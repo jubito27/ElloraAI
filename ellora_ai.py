@@ -12,6 +12,8 @@ import tempfile
 from io import BytesIO
 from Ellora_vyasa import get_vedic_response
 from Ellora_medic import get_medic_response
+from voice_recognition import voice_input_component , speech_to_text
+
 
 
 # ---- CONFIG ----
@@ -277,7 +279,7 @@ st.caption("AI with multiple personalities to give you the best experience! 💬
 #voice_input = st.button("🎤 Voice Input")
 avatar = avatars.get(st.session_state.role, "🤖")
 if voice_input:
-    user_input = speech_to_text()
+    user_input = voice_input_component()
     if user_input:
         # Add user message to chat history
         st.session_state.messages.append(("🧑‍💻 You", user_input))
