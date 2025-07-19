@@ -220,6 +220,13 @@ def speech_to_text():
             st.error(f"Error: {str(e)}")
             return ""
 
+        try :
+            import pyaudio
+        except ImportError:
+            raise AttributeError("Could not find PyAudio;")
+        return pyaudio 
+            
+
 # ---- SESSION INIT ----
 if "messages" not in st.session_state:
     st.session_state.messages = []
