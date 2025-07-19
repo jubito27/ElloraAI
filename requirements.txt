@@ -7,7 +7,7 @@ langchain-huggingface
 chromadb
 pillow
 gtts
-pygame
+pyaudio
 speechrecognition
 transformers
 sentence-transformers
