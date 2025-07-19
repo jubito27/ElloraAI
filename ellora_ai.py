@@ -286,7 +286,7 @@ if voice_input:
             # elif any(name in prompt_lower for name in restricted_names):
             #     response += "I'm not allowed to disclose personal information about my creator."
             # else:
-            response += generate_response(prompt, st.session_state.role, uploaded_image, uploaded_file)
+            response = generate_response(prompt, st.session_state.role, uploaded_image, uploaded_file)
             placeholder = st.empty()
             full_response = ""
             for word in response.split():
@@ -334,7 +334,7 @@ if prompt := st.chat_input("Type your message here..."):
         # elif any(name in prompt_lower for name in restricted_names):
         #     response += "I'm not allowed to disclose personal information about my creator."
         # else:
-        response += generate_response(prompt, st.session_state.role, uploaded_image, uploaded_file)
+        response = generate_response(prompt, st.session_state.role, uploaded_image, uploaded_file)
         placeholder = st.empty()
         full_response = ""
         for word in response.split():
