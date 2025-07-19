@@ -30,6 +30,7 @@ cd ellora-ai
 ### 2. Install Dependencies
 ```bash
 pip install -r requirements.txt
+pip install -r packages.txt
 ```
 
 ### 3. Set API Keys
