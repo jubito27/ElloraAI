@@ -203,28 +203,33 @@ def generate_response(user_input, role, uploaded_image=None, uploaded_file=None)
 # ---- SPEECH TO TEXT ----
 def speech_to_text():
     recognizer = sr.Recognizer()
-    with sr.Microphone() as source:
-        st.info("🎙️ Listening...", icon="🎧")
-        recognizer.adjust_for_ambient_noise(source, duration=1)
-        audio = recognizer.listen(source, phrase_time_limit=7)
-
-        try:
-            return recognizer.recognize_google(audio)
-        except sr.UnknownValueError:
-            st.error("Could not understand audio")
-            return ""
-        except sr.RequestError as e:
-            st.error(f"Could not request results; {e}")
-            return ""
-        except Exception as e:
-            st.error(f"Error: {str(e)}")
+    try:
+        # Try listing microphones to catch "no device" errors early
+        mic_list = sr.Microphone.list_microphone_names()
+        if not mic_list:
+            st.warning("⚠️ No microphone devices detected.")
             return ""
 
-        try :
-            import pyaudio
-        except ImportError:
-            raise AttributeError("Could not find PyAudio;")
-        return pyaudio 
+        with sr.Microphone() as source:
+            st.info("🎙️ Listening...", icon="🎧")
+            recognizer.adjust_for_ambient_noise(source, duration=1)
+            audio = recognizer.listen(source, phrase_time_limit=7)
+
+            try:
+                return recognizer.recognize_google(audio)
+            except sr.UnknownValueError:
+                st.error("❌ Could not understand the audio.")
+                return ""
+            except sr.RequestError as e:
+                st.error(f"❌ Could not request results from Google; {e}")
+                return ""
+
+    except OSError as e:
+        st.error("❌ No default microphone input device found. Please plug in a mic or check permissions.")
+        return ""
+    except Exception as e:
+        st.error(f"🎤 Microphone error: {str(e)}")
+        return ""
             
 
 # ---- SESSION INIT ----
