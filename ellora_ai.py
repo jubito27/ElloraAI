@@ -7,7 +7,6 @@ import io
 import speech_recognition as sr
 import time
 from gtts import gTTS
-import pygame
 import tempfile
 from io import BytesIO
 from Ellora_vyasa import get_vedic_response
@@ -273,7 +272,6 @@ voice_input = st.sidebar.button("🎙️ Voice Input",use_container_width=True ,
 
 if st.sidebar.button("🧹 Clear Chat" , use_container_width=True , help="You can clear chats and clean the interface"):
     st.session_state.messages = []
-    pygame.mixer.music.stop()
 
 uploaded_image = st.sidebar.file_uploader("Upload Image", type=["jpg", "png", "jpeg"] , help="Upload an image to get visual context for your queries. Ellora AI can analyze images and provide relevant information based on the content of the image.")
 uploaded_file = st.sidebar.file_uploader("Upload File (txt, md, py, etc.)", type=["txt", "md", "py"] , help="Upload a text file to provide additional context for your queries. Ellora AI can read and understand the content of the file to answer questions more accurately.")
